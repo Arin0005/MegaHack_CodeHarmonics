@@ -58,7 +58,19 @@ openapps = {
     "task manager": "taskmgr",
     "control panel": "control",
     "settings": "ms-settings",
-    "prime":"PrimeVideo"
+    "prime":"PrimeVideo",
+    "camera": "microsoft.windows.camera",  # Windows Camera App
+    "photos": "microsoft.windows.photos",  # Windows Photos App
+    "mail": "microsoft.windowscommunicationsapps",  # Windows Mail App
+    "calendar": "microsoft.windowscommunicationsapps",  # Windows Calendar App
+    "alarm": "microsoft.windowsalarms",  # Windows Alarms & Clock App
+    "maps": "microsoft.windowsmaps",  # Windows Maps App
+    "weather": "microsoft.bingweather",  # Windows Weather App
+    "news": "microsoft.bingnews",  # Windows News App
+    "groove music": "microsoft.zunemusic",  # Windows Groove Music App
+    "movies": "microsoft.windowsphotos",  # Windows Movies & TV App
+    "sticky notes": "microsoft.stickynotes",  # Windows Sticky Notes App
+    "voice recorder": "microsoft.windowsvoice Recorder",  # Windows Voice Recorder App
 }  # Dictionary for apps
 
 def openweb(query):  # Function to open web or apps

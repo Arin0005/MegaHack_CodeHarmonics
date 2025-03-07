@@ -10,6 +10,7 @@ def speak(audio):
     engine.runAndWait()
 
 def greet():
+    print("greeeeeeet function")
     hour = int(datetime.datetime.now().hour)
     if hour >= 0 and hour < 12:
         speak("Good Morning Sir")

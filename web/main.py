@@ -1,125 +1,100 @@
-import pyaudio
 import pyttsx3
 import speech_recognition as sr
-# from openapp import openweb as ow
-
-# Initialize the pyttsx3 engine
-engine = pyttsx3.init("sapi5")
-voices = engine.getProperty("voices")
-
-# # Set default voice to David
-# engine.setProperty("voice", voices[0].id)
-engine.setProperty("rate", 160)  # Set speech rate
+from greetings import greet, bye
+from findpath import mapPath
+from openapp import openweb, closeapp, ott
+from search import Google, play_on_spotify, play, wiki_pedia, Youtube
+from events import event
 
 
-def speak(audio):
-    engine.say(audio)
-    engine.runAndWait()
 
+class VoiceAssistant:
+    def __init__(self):
+        self.engine = pyttsx3.init("sapi5")
+        self.voices = self.engine.getProperty("voices")
+        self.engine.setProperty("rate", 160)  # Set speech rate
 
-# def change_voice():
-#     # Define voice names
-#     voice_names = {0: "David", 1: "Zira", 2: "Mark"}
-#
-#     # Get current voice index
-#     current_voice_id = engine.getProperty("voice")
-#     current_voice_index = next((i for i, voice in enumerate(voices) if voice.id == current_voice_id), None)
-#
-#     # Cycle through the voices
-#     next_voice_index = (current_voice_index + 1) % len(voices)
-#     engine.setProperty("voice", voices[next_voice_index].id)
-#     speak(f"Voice changed to {voice_names[next_voice_index]}")
-#
+    def speak(self, audio):
+        self.engine.say(audio)
+        self.engine.runAndWait()
 
-def takecommand():
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Speak....")
-        r.pause_threshold = 1
-        r.energy_threshold = 275  # Sensitivity to ambient noise
+    def take_command(self):
+        recognizer = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Listening...")
+            recognizer.adjust_for_ambient_noise(source)
+            audio = recognizer.listen(source)
+            try:
+                print("Hearing...")
+                query = recognizer.recognize_google(audio, language='en-in')
+                print(f"You Said: {query}\n")
+                return query.lower()
+            except sr.UnknownValueError:
+                print("Sorry, I did not understand that.\n")
+                return None
+            except sr.RequestError:
+                print("Sorry, there was an error with the speech recognition service.")
+                return None
 
-        audio = r.listen(source, 0, 3)  # Stops listening after 3 seconds
+    def handle_command(self, query):
+        if "bye" in query:
+            self.speak("Okay, You can call me again as you wish Sir")
+            bye()
+            return False
 
-        try:
-            print("Hearing...")
-            query = r.recognize_google(audio, language='en-in')  # Google speech recognition
-            print(f"You Said: {query}\n")
-        except sr.UnknownValueError:
-            print("Sorry, I did not understand that.\n")
-            return "None"
-        except sr.RequestError:
-            print("Sorry, there was an error with the speech recognition service.")
-            return "None"
-        return query
+        elif "hello" in query:
+            self.speak("Hello Sir, How can I help you?")
 
+        elif "how are you" in query:
+            self.speak("I'm fine. How are you, Sir?")
 
+        elif "thank you" in query:
+            self.speak("You're welcome, Sir. I'm grateful to be of help.")
+
+        elif "open" in query:
+            openweb(query)
+
+        elif "close" in query:
+            closeapp(query)
+
+        elif "google" in query:
+            Google(query)
+
+        elif "youtube" in query:
+            Youtube(query)
+
+        elif "wikipedia" in query:
+            wiki_pedia(query)
+
+        elif "stream" in query or "show" in query or "ott" in query:
+            ott(query)
+
+        elif "play" in query:
+            play(query)
+
+        elif "spotify" in query:
+            play_on_spotify(query)
+
+        elif "find route" in query:
+            mapPath(query)
+
+        elif "schedule" in query:
+            event(query)
+        return True
+
+    def run(self):
+        while True:
+            query = self.take_command()
+            if query and "ultron" in query:
+                self.speak("How Can I Help you sir!!")
+                while True:
+                    query = self.take_command()
+                    if query and not self.handle_command(query):
+                        break
+            elif query and "shutdown" in query:
+                self.speak("Shutting down completely..")
+                break
 
 if __name__ == "__main__":
-    i = 1
-    while i:
-        query = takecommand().lower()
-        if "wake up" in query:
-            from greetings import greet
-
-            greet()
-
-            while True:
-                query = takecommand().lower()
-                if "go to sleep" in query:  # Goes to sleep but doesn't shut down
-                    speak("Okay, You can call me again as you wish Sir")
-                    from greetings import bye
-                    bye()
-                    break
-
-                # elif "change voice" in query:
-                #     change_voice()
-
-                elif "hello" in query:
-                    speak("Hello Sir, How can I help you?")
-
-                elif "how are you" in query:
-                    speak("I'm fine. How are you, Sir?")
-
-                elif "thank you" in query:
-                    speak("You're welcome, Sir. I'm grateful to be of help.")
-
-                elif "open" in query:
-                    from openapp import openweb
-                    openweb(query)
-
-                elif "close" in query:
-                    from openapp import closeapp
-                    closeapp(query)
-
-                elif "google" in query:
-                    from search import Google
-                    Google(query)
-
-                elif "youtube" in query:
-                    from search import Youtube
-                    Youtube(query)
-
-                elif "wikipedia" in query:
-                    from search import wiki_pedia
-                    wiki_pedia(query)
-
-                elif "stream" in query or "show" in query or "ott" in query:
-                    from openapp import ott
-                    ott(query)
-
-                elif "play" in query:
-                    from search import play
-                    play(query)
-
-                elif "spotify" in query:
-                    from search import play_on_spotify
-                    play_on_spotify(query)
-
-                elif "find route" in query:
-                    from findpath import mapPath
-                    mapPath(query)
-
-
-        elif "shutdown" in query:
-            speak("Shutting down completely..")
-            break
+    assistant = VoiceAssistant()
+    assistant.run()

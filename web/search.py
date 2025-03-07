@@ -1,11 +1,8 @@
 import webbrowser
-
 import pyttsx3
 import speech_recognition as sr
 import pywhatkit
 import wikipedia
-
-
 
 # Initialize the pyttsx3 engine
 engine = pyttsx3.init("sapi5")
@@ -46,7 +43,7 @@ def Google(query):
         speak("This is what i found on google:")
         try:
             pywhatkit.search(query)
-            result = gs.summary(query,2)
+            result = gs.summary(query,1)
             speak(result)
             print("Done")
         except:
@@ -80,7 +77,7 @@ def wiki_pedia(query):
         query = query.replace("wikipedia","")
         query = query.replace("wikipedia search", "")
         speak("This is what i found on wikipedia:")
-        result = wikipedia.summary(query,sentences=3)
+        result = wikipedia.summary(query,sentences=2)
         print(result)
         speak("According to Wikipedia :"+result)
 

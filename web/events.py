@@ -3,8 +3,10 @@ from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 import datetime
 import re
+import pytz
 
 # Google Calendar API settings
+ist = pytz.timezone('Asia/Kolkata')  # IST timezone
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 SERVICE_ACCOUNT_FILE = 'credentials.json'  # Update with your service account file
 
@@ -55,7 +57,7 @@ def extract_event_details(text):
             except ValueError:
                 continue
     if not event_date:
-        event_date = datetime.date.today().strftime('%Y-%m-%d')  # Default to today
+        event_date = datetime.datetime.now(ist).strftime('%Y-%m-%d')  # Default to today
 
     # Extract time
     event_time = None
@@ -87,15 +89,15 @@ def create_calendar_event(event_summary, event_date, event_time):
         'end': {'dateTime': end_time, 'timeZone': 'America/New_York'},
     }
     try:
-        event_result = service.events().insert(calendarId='arinthamke@gmail.com', body=event).execute()
+        event_result = service.events().insert(calendarId='nadarharish03@gmail.com', body=event).execute()
         print(f"Event created: {event_result.get('htmlLink')}")
     except Exception as e:
         print(f"Error creating event: {e}")
 
-def main():
+def event(text):
     """Main function to handle speech input and event creation."""
     print("Say something like: 'Schedule a meeting on 25 August 2025 at 5 pm'")
-    text = recognize_speech()
+    # text = recognize_speech()
     if text:
         event_date, event_time = extract_event_details(text)
         if event_date and event_time:
@@ -109,5 +111,5 @@ def main():
         else:
             print("Failed to extract event details. Please try again.")
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     event()
