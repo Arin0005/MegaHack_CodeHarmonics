@@ -84,3 +84,12 @@ def wiki_pedia(query):
         print(result)
         speak("According to Wikipedia :"+result)
 
+def play_on_spotify(query):
+    if "spotify" in query:
+        spotify_search_url = "https://open.spotify.com/search/"
+
+        formatted_query = query.replace(" ", "%20") # (replace spaces with %20)
+        full_url = f"{spotify_search_url}{formatted_query}"
+
+        webbrowser.open(full_url)
+        speak(f"Searching for '{query}' on Spotify...")

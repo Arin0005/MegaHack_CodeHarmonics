@@ -3,8 +3,6 @@ import datetime
 
 engine = pyttsx3.init("sapi5")
 voice = engine.getProperty("voices")
-engine.setProperty("voice",voice[0].id) # 0 - david, 1 - Zira,
-# print(voices[0])
 engine.setProperty("rate",160)
 
 def speak(audio):

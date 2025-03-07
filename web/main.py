@@ -99,10 +99,27 @@ if __name__ == "__main__":
                     from search import Youtube
                     Youtube(query)
 
+                elif "wikipedia" in query:
+                    from search import wiki_pedia
+                    wiki_pedia(query)
+
+                elif "stream" in query or "show" in query or "ott" in query:
+                    from openapp import ott
+                    ott(query)
+
                 elif "play" in query:
                     from search import play
                     play(query)
 
-                elif "wikipedia" in query:
-                    from search import wiki_pedia
-                    wiki_pedia(query)
+                elif "spotify" in query:
+                    from search import play_on_spotify
+                    play_on_spotify(query)
+
+                elif "find route" in query:
+                    from findpath import mapPath
+                    mapPath(query)
+
+
+        elif "shutdown" in query:
+            speak("Shutting down completely..")
+            break
