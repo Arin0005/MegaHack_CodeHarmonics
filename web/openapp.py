@@ -4,16 +4,13 @@ import webbrowser
 import pyttsx3
 from time import sleep
 
-
 engine = pyttsx3.init("sapi5")
 voice = engine.getProperty("voices")
-# engine.setProperty("voice", voice[0].id)  # 0 - David, 1 - Zira
-engine.setProperty("rate", 160)  # Set speech rate
+engine.setProperty("rate", 160)
 
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
-
 
 openapps = {
     "command prompt": "cmd",
@@ -52,31 +49,31 @@ openapps = {
     "blender": "blender",
     "autocad": "acad",
     "obs": "obs",
-    "steam": "steam",
+    "steam": "steam:",
     "epic games": "epicgameslauncher",
     "microsoft store": "ms-windows-store",
     "task manager": "taskmgr",
     "control panel": "control",
     "settings": "ms-settings",
-    "prime":"PrimeVideo",
-    "camera": "microsoft.windows.camera",  # Windows Camera App
-    "photos": "microsoft.windows.photos",  # Windows Photos App
-    "mail": "microsoft.windowscommunicationsapps",  # Windows Mail App
-    "calendar": "microsoft.windowscommunicationsapps",  # Windows Calendar App
-    "alarm": "microsoft.windowsalarms",  # Windows Alarms & Clock App
-    "maps": "microsoft.windowsmaps",  # Windows Maps App
-    "weather": "microsoft.bingweather",  # Windows Weather App
-    "news": "microsoft.bingnews",  # Windows News App
-    "groove music": "microsoft.zunemusic",  # Windows Groove Music App
-    "movies": "microsoft.windowsphotos",  # Windows Movies & TV App
-    "sticky notes": "microsoft.stickynotes",  # Windows Sticky Notes App
-    "voice recorder": "microsoft.windowsvoice Recorder",  # Windows Voice Recorder App
-}  # Dictionary for apps
+    "prime": "PrimeVideo",
+    "camera": "microsoft.windows.camera:",
+    "photos": "microsoft.windows.photos:",
+    "mail": "microsoft.windowscommunicationsapps:",
+    "calendar": "microsoft.windowscommunicationsapps:",
+    "alarm": "microsoft.windowsalarms:",
+    "maps": "microsoft.windowsmaps:",
+    "weather": "microsoft.bingweather:",
+    "news": "microsoft.bingnews:",
+    "groove music": "microsoft.zunemusic:",
+    "movies": "microsoft.windowsphotos",
+    "sticky notes": "microsoft.stickynotes",
+    "voice recorder": "microsoft.windowsvoice Recorder",
+}
 
-def openweb(query):  # Function to open web or apps
+def openweb(query):
     speak("Processing Sir....")
     if ".com" in query or ".co.in" in query or ".org" in query:
-        query = query.replace("open","")
+        query = query.replace("open", "")
         query = query.replace("launch", "")
         webbrowser.open(f"https://www.{query}")
     else:
@@ -84,7 +81,6 @@ def openweb(query):  # Function to open web or apps
         for app in keys:
             if app in query:
                 os.system(f"start {openapps[app]}")
-
 
 def closeapp(query):
     speak("Closing sir....")
@@ -104,10 +100,16 @@ def closeapp(query):
         keys = list(openapps.keys())
         for app in keys:
             if app in query:
-                os.system(f"taskkill /f /im {openapps[app]}.exe")  # Corrected taskkill command
+                os.system(f"taskkill /f /im {openapps[app]}.exe")
 
+def close_tabs(number_of_tabs):
+    try:
+        pyautogui.hotkey("alt", "tab")
+        sleep(1)
+    except Exception as e:
+        speak("Unable to bring the browser into focus. Please ensure a browser window is open.")
+        return
 
-def close_tabs(number_of_tabs):  # Function to close tabs
     for _ in range(number_of_tabs):
         pyautogui.hotkey("ctrl", "w")
         sleep(0.5)
@@ -127,36 +129,3 @@ def ott(query):
         webbrowser.open(f"https://www.{ott}.com/in/")
     else:
         speak("I couldn't identify which streaming platform you wanted. Please specify Netflix, Prime Video, Disney+, or another service.")
-
-    # ott_platforms = {
-    #     "netflix": "https://www.netflix.com",
-    #     "prime video": "https://www.primevideo.com",
-    #     "prime": "https://www.primevideo.com",
-    #     "amazon prime": "https://www.primevideo.com",
-    #     "disney plus": "https://www.disneyplus.com",
-    #     "disney+": "https://www.disneyplus.com",
-    #     "hotstar": "https://www.hotstar.com",
-    #     "disney hotstar": "https://www.hotstar.com",
-    #     "hulu": "https://www.hulu.com",
-    #     "hbo max": "https://www.max.com",
-    #     "max": "https://www.max.com",
-    #     "apple tv": "https://tv.apple.com",
-    #     "apple tv plus": "https://tv.apple.com",
-    #     "apple tv+": "https://tv.apple.com",
-    #     "youtube": "https://www.youtube.com",
-    #     "youtube premium": "https://www.youtube.com/premium",
-    #     "paramount plus": "https://www.paramountplus.com",
-    #     "paramount+": "https://www.paramountplus.com",
-    #     "peacock": "https://www.peacocktv.com",
-    #     "discovery plus": "https://www.discoveryplus.com",
-    #     "discovery+": "https://www.discoveryplus.com",
-    #     "crunchyroll": "https://www.crunchyroll.com",
-    #     "funimation": "https://www.funimation.com",
-    #     "sony liv": "https://www.sonyliv.com",
-    #     "zee5": "https://www.zee5.com",
-    #     "voot": "https://www.voot.com",
-    #     "jiocinema": "https://www.jiocinema.com",
-    #     "mubi": "https://mubi.com",
-    #     "tubi": "https://tubitv.com",
-    #     "pluto tv": "https://pluto.tv"
-    # }  # Dictionary of OTT platforms and their URLs

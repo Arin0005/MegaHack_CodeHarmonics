@@ -5,8 +5,7 @@ from findpath import mapPath
 from openapp import openweb, closeapp, ott
 from search import Google, play_on_spotify, play, wiki_pedia, Youtube
 from events import event
-
-
+from performance_metrics import system_metrics  # Import the system_metrics function
 
 class VoiceAssistant:
     def __init__(self):
@@ -36,6 +35,18 @@ class VoiceAssistant:
                 print("Sorry, there was an error with the speech recognition service.")
                 return None
 
+    def ask_confirmation(self, prompt):
+        self.speak(prompt)
+        response = self.take_command()
+        if response and "yes" in response:
+            return True
+        elif response and "no" in response:
+            return False
+        else:
+            self.speak("I didn't understand your response. Please say 'yes' or 'no'.")
+            return self.ask_confirmation(prompt)  # Retry
+
+
     def handle_command(self, query):
         if "bye" in query:
             self.speak("Okay, You can call me again as you wish Sir")
@@ -54,8 +65,17 @@ class VoiceAssistant:
         elif "open" in query:
             openweb(query)
 
+
         elif "close" in query:
-            closeapp(query)
+            app_name = query.replace("close", "").strip()
+            if app_name:
+                if self.ask_confirmation(f"Are you sure you want to close {app_name}?"):
+                    closeapp(app_name)
+                    self.speak(f"{app_name} has been closed.")
+                else:
+                    self.speak("Okay, I will not close it.")
+            else:
+                self.speak("Please specify the application to close.")
 
         elif "google" in query:
             Google(query)
@@ -78,8 +98,36 @@ class VoiceAssistant:
         elif "find route" in query:
             mapPath(query)
 
-        elif "schedule" in query:
+        elif "schedule meeting" in query or "create event" in query:
             event(query)
+
+        elif "system performance" in query or "system metrics" in query:
+            metrics = system_metrics()
+            self.speak(f"CPU Usage is {metrics['cpu_usage']} percent.")
+            self.speak(f"Memory Usage is {metrics['memory_percent']} percent.")
+            # self.speak(f"Disk Usage is {metrics['disk_percent']} percent.")
+            # self.speak(f"Network: Sent {metrics['bytes_sent']} MB, Received {metrics['bytes_recv']} MB.")
+            # self.speak(f"System Boot Time: {metrics['boot_time']}.")
+            if metrics['battery_percent'] != "N/A":
+                self.speak(f"Battery is at {metrics['battery_percent']} percent.")
+                if metrics['is_plugged']:
+                    self.speak("The system is currently plugged in.")
+                else:
+                    self.speak(f"Estimated time left: {metrics['battery_time_left']} seconds.")
+            else:
+                self.speak("Battery information is not available.")
+
+                # Provide feedback and suggest actions
+                if metrics['cpu_usage'] > 80:
+                    self.speak("Your CPU usage is very high. You Should close some background applications.")
+
+
+        elif "shutdown" in query:
+            if self.ask_confirmation("Are you sure you want to shut down the system?"):
+                self.speak("Shutting down completely..")
+                return False
+            else:
+                self.speak("Shutdown canceled.")
         return True
 
     def run(self):
@@ -89,8 +137,12 @@ class VoiceAssistant:
                 self.speak("How Can I Help you sir!!")
                 while True:
                     query = self.take_command()
-                    if query and not self.handle_command(query):
+                    if query is None:
+                        continue
+                    if "quit" in query:
                         break
+                    if not self.handle_command(query):
+                        return  # Exit the run method, effectively shutting down the assistant
             elif query and "shutdown" in query:
                 self.speak("Shutting down completely..")
                 break
